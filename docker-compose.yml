@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  nginx:
+    build: .
+    container_name: nginx_waf
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./influxdb/update_influxdb.sh:/usr/local/bin/update_influxdb.sh
+    extra_hosts:
+      - "osto-assignment.com:127.0.0.1"
+      - "www.osto-assignment.com:127.0.0.1"
+    depends_on:
+      - web_app
+      - dashboard_app  # Ensure nginx waits for dashboard_app
+
+  web_app:
+    build: ./web_app  # This points to your Go web application directory
+    container_name: go_web_app
+    ports:
+      - "8080:8080"  # Expose your Go app on port 8080
+    networks:
+      - default
+
+  dashboard_app:
+    build: ./dashboard_app  # Directory containing your dashboard service
+    container_name: go_dashboard_app
+    ports:
+      - "8090:8090"  # Expose the dashboard API on port 8090
+    depends_on:
+      - influxdb  # Wait for InfluxDB to start before running dashboard app
+    networks:
+      - default
+    environment:
+      INFLUXDB_URL: "http://influxdb:8086"
+      INFLUXDB_BUCKET: "api_metrics"
+      INFLUXDB_ORG: "my-org"
+      MEASUREMENT: "api_requests"
+
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb_data:/var/lib/influxdb
+    networks:
+      - default
+
+volumes:
+  influxdb_data:
+
+networks:
+  default:
+    driver: bridge
