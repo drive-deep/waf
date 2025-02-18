@@ -10,7 +10,7 @@ import (
 func DashboardHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	dashboardData, err := services.GetDashboardData()
+	dashboardData, err := services.GetDashboardData("day")
 	if err != nil {
 		http.Error(w, `{"error": "Failed to fetch data from InfluxDB"}`, http.StatusInternalServerError)
 		return

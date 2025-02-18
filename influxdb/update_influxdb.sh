@@ -1,14 +1,13 @@
 #!/bin/bash
 
-# Variables
-INFLUXDB_URL="http://influxdb:8086"  # URL of your InfluxDB container
-INFLUXDB_ORG="my-org"                # Organization name
-INFLUXDB_BUCKET="api_metrics"        # Bucket in InfluxDB
-MEASUREMENT="api_requests"           # Measurement name
-INFLUXDB_TOKEN="my-influxdb-token-12345abcdef67890" # Sample Token for Authentication
+# Variables (using values from docker-compose.yml)
+INFLUXDB_URL="http://influxdb:8086"  # Service name 'influxdb' resolves to the container
+INFLUXDB_ORG="waf"                  # Organization name from docker-compose.yml
+INFLUXDB_BUCKET="waf"                # Bucket name from docker-compose.yml
+MEASUREMENT="api_requests"           # Measurement name (you can customize this)
 
 # Get the API endpoint and current timestamp
-API_ENDPOINT=$1
+API_ENDPOINT="$1"
 TIMESTAMP=$(date +%s)
 
 # Check if the API endpoint is provided
@@ -17,10 +16,23 @@ if [ -z "$API_ENDPOINT" ]; then
   exit 1
 fi
 
-# Send data to InfluxDB v2 with token-based authentication
-curl --request POST "$INFLUXDB_URL/api/v2/write?org=$INFLUXDB_ORG&bucket=$INFLUXDB_BUCKET&precision=s" \
-  --header "Authorization: Token $INFLUXDB_TOKEN" \
-  --header "Content-Type: text/plain; charset=utf-8" \
-  --data-binary "$MEASUREMENT,endpoint=$API_ENDPOINT value=1 $TIMESTAMP"
+# Sanitize the API endpoint for InfluxDB tags
+SANITIZED_ENDPOINT=$(echo "$API_ENDPOINT" | sed 's/[^a-zA-Z0-9_]/_/g')
 
-echo "✅ API request data sent to InfluxDB for endpoint: $API_ENDPOINT"
+# Send data to InfluxDB v2 (without authentication)
+curl --request POST "$INFLUXDB_URL/api/v2/write?org=$INFLUXDB_ORG&bucket=$INFLUXDB_BUCKET&precision=s" \
+  --header "Content-Type: text/plain; charset=utf-8" \
+  --data-binary "$MEASUREMENT,endpoint=$SANITIZED_ENDPOINT value=1 $TIMESTAMP"
+
+# Check the response from InfluxDB
+RESPONSE=$(curl --request POST -s "$INFLUXDB_URL/api/v2/write?org=$INFLUXDB_ORG&bucket=$INFLUXDB_BUCKET&precision=s" \
+  --header "Content-Type: text/plain; charset=utf-8" \
+  --data-binary "$MEASUREMENT,endpoint=$SANITIZED_ENDPOINT value=1 $TIMESTAMP")
+
+if [[ "$RESPONSE" == "" ]]; then
+  echo "✅ API request data sent to InfluxDB for endpoint: $API_ENDPOINT"
+else
+  echo "❌ Error sending data to InfluxDB:"
+  echo "$RESPONSE"
+  exit 1
+fi

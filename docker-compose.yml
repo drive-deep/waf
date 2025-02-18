@@ -36,21 +36,27 @@ services:
     environment:
       INFLUXDB_URL: "http://influxdb:8086"
       INFLUXDB_BUCKET: "api_metrics"
-      INFLUXDB_ORG: "my-org"
+      INFLUXDB_ORG: "waf"
       MEASUREMENT: "api_requests"
 
   influxdb:
-    image: influxdb:latest
-    container_name: influxdb
+    image: influxdb:latest  # Or specify a version like influxdb:2.7
     ports:
-      - "8086:8086"
+      - "8086:8086" # InfluxDB HTTP API
+      - "8083:8083" # InfluxDB Admin UI (if applicable for the version)
     volumes:
-      - influxdb_data:/var/lib/influxdb
-    networks:
-      - default
+      - influxdb_data:/var/lib/influxdb # Persist data across container restarts
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup # Initialize InfluxDB on first run
+      # - DOCKER_INFLUXDB_INIT_USERNAME=admin # Set initial username (optional, but good practice even without auth)
+      # - DOCKER_INFLUXDB_INIT_PASSWORD=password # Set initial password (optional, but good practice even without auth)
+      - DOCKER_INFLUXDB_INIT_ORG=waf # Set initial organization name
+      - DOCKER_INFLUXDB_INIT_BUCKET=api_metrics # Set initial bucket name
+      # - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=mytoken # Set initial admin token (optional, but good practice even without auth)
+      - INFLUXDB_HTTP_AUTH_ENABLED=false # Disable authentication (THIS IS WHAT YOU ASKED FOR, BUT READ THE IMPORTANT NOTE BELOW) 
 
 volumes:
-  influxdb_data:
+  influxdb_data: # Named volume for data persistence
 
 networks:
   default:
