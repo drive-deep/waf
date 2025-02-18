@@ -12,8 +12,8 @@ import (
 func main() {
 	// Initialize InfluxDB connection
 	INFLUXDB_URL := "http://influxdb:8086"
-	INFLUXDB_ORG := "waf"
-	INFLUXDB_BUCKET := "api_metrics"
+	INFLUXDB_ORG := "myorg"
+	INFLUXDB_BUCKET := "mybucket"
 
 	// Initialize InfluxDB connection without authentication
 	influxdb.InitInfluxDB(INFLUXDB_URL, INFLUXDB_ORG, INFLUXDB_BUCKET)

@@ -2,8 +2,8 @@
 
 # Variables (using values from docker-compose.yml)
 INFLUXDB_URL="http://influxdb:8086"  # Service name 'influxdb' resolves to the container
-INFLUXDB_ORG="waf"                  # Organization name from docker-compose.yml
-INFLUXDB_BUCKET="waf"                # Bucket name from docker-compose.yml
+INFLUXDB_ORG="myorg"                  # Organization name from docker-compose.yml
+INFLUXDB_BUCKET="mybucket"                # Bucket name from docker-compose.yml
 MEASUREMENT="api_requests"           # Measurement name (you can customize this)
 
 # Get the API endpoint and current timestamp
