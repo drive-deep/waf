@@ -14,9 +14,10 @@ func main() {
 	INFLUXDB_URL := "http://influxdb:8086"
 	INFLUXDB_ORG := "myorg"
 	INFLUXDB_BUCKET := "mybucket"
+	INFLUXDB_TOKEN := "1un_2_x6qWT8k-g2vSD3UDzH2qENtlK7kUuydbJwJkiMzq5lI0I7-mFERZ7HKqeDqK1UObpr_mHqZV0Uchw2_Q=="
 
 	// Initialize InfluxDB connection without authentication
-	influxdb.InitInfluxDB(INFLUXDB_URL, INFLUXDB_ORG, INFLUXDB_BUCKET)
+	influxdb.InitInfluxDB(INFLUXDB_URL, INFLUXDB_ORG, INFLUXDB_BUCKET, INFLUXDB_TOKEN)
 
 	mux := http.NewServeMux()
 	dashboard_route.RegisterRoutes(mux)

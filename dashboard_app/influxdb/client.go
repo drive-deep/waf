@@ -15,13 +15,13 @@ var (
 	bucket string
 )
 
-func InitInfluxDB(url, orgName, bucketName string) {
+func InitInfluxDB(url, orgName, bucketName, token string) {
 	// Retry parameters
 	maxRetries := 10
 	retryInterval := 5 * time.Second
 
 	// Connect to InfluxDB without authentication
-	client = influxdb2.NewClient(url, "mytoken") 
+	client = influxdb2.NewClient(url, token) 
 
 	// Set global org and bucket
 	org = orgName
