@@ -5,6 +5,7 @@ INFLUXDB_URL="http://influxdb:8086"  # URL of your InfluxDB container
 INFLUXDB_ORG="my-org"                # Organization name
 INFLUXDB_BUCKET="api_metrics"        # Bucket in InfluxDB
 MEASUREMENT="api_requests"           # Measurement name
+INFLUXDB_TOKEN="my-influxdb-token-12345abcdef67890" # Sample Token for Authentication
 
 # Get the API endpoint and current timestamp
 API_ENDPOINT=$1
@@ -16,8 +17,9 @@ if [ -z "$API_ENDPOINT" ]; then
   exit 1
 fi
 
-# Send data to InfluxDB v2 (uses org and bucket)
+# Send data to InfluxDB v2 with token-based authentication
 curl --request POST "$INFLUXDB_URL/api/v2/write?org=$INFLUXDB_ORG&bucket=$INFLUXDB_BUCKET&precision=s" \
+  --header "Authorization: Token $INFLUXDB_TOKEN" \
   --header "Content-Type: text/plain; charset=utf-8" \
   --data-binary "$MEASUREMENT,endpoint=$API_ENDPOINT value=1 $TIMESTAMP"
 

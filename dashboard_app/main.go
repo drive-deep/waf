@@ -11,11 +11,13 @@ import (
 
 func main() {
 	// Initialize InfluxDB connection
-	influxdbURL := "http://influxdb:8086"
-	influxdbBucket := "api_metrics"
+	INFLUXDB_URL := "http://influxdb:8086"
+	INFLUXDB_ORG := "my-org"
+	INFLUXDB_BUCKET := "api_metrics"
+	INFLUXDB_TOKEN := "my-influxdb-token-12345abcdef67890"
 
 	// Initialize InfluxDB connection without authentication
-	influxdb.InitInfluxDB(influxdbURL, "", "", influxdbBucket)
+	influxdb.InitInfluxDB(INFLUXDB_URL, INFLUXDB_TOKEN, INFLUXDB_ORG, INFLUXDB_BUCKET)
 	defer influxdb.GetInfluxDBClient().Close()
 
 	mux := http.NewServeMux()
