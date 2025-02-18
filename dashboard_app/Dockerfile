@@ -1,32 +1,20 @@
-# Use the official Golang image as a build stage
-FROM golang:1.18 AS builder
+# Start from a Go image
+FROM golang:1.18-alpine
 
-# Set the working directory inside the container
+# Set the Current Working Directory inside the container
 WORKDIR /app
 
-# Copy go.mod and go.sum first (for caching dependencies)
-COPY go.mod go.sum ./
-
-# Download dependencies
-RUN go mod download
-
-# Copy the rest of the application source code
+# Copy everything from the current directory to the container's working directory
 COPY . .
 
-# Build the Go application
+# Install any dependencies (if necessary)
+RUN go mod tidy
+
+# Build the Go app
 RUN go build -o dashboard_app .
 
-# Use a minimal base image for the final container
-FROM alpine:latest
-
-# Set working directory in the container
-WORKDIR /root/
-
-# Copy the compiled binary from the builder stage
-COPY --from=builder /app/dashboard_app .
-
-# Expose the port the app runs on
+# Expose port 8080 to the outside world
 EXPOSE 8090
 
-# Run the dashboard application
+# Command to run the executable
 CMD ["./dashboard_app"]
