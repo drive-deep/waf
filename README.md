@@ -66,19 +66,43 @@ Once the app is running, you can test its functionality and verify the metrics b
 You can test the API by making requests to different endpoints:  
 
 ```bash
-curl -i http://osto-assignment.com/users
+curl -i http://osto-assignment.com:8080/users
 ```
-✔ Returns `application/json` in response headers  
+✔ Returns `application/json` in response headers 
+curl -i http://osto-assignment.com/users
+  HTTP/1.1 200 OK
+  Server: openresty/1.27.1.1
+  Date: Wed, 19 Feb 2025 04:24:33 GMT
+  Content-Type: application/json
+  Content-Length: 48
+  Connection: keep-alive
+
+[{"id":1,"name":"Alice"},{"id":2,"name":"Bob"}] 
 
 ```bash
 curl -i http://osto-assignment.com/orders
 ```
-✔ Returns `application/json` in response headers  
+✔ Returns `application/json` in response headers 
+  HTTP/1.1 200 OK
+  Server: openresty/1.27.1.1
+  Date: Wed, 19 Feb 2025 04:24:24 GMT
+  Content-Type: application/json
+  Content-Length: 82
+  Connection: keep-alive
 
 ```bash
 curl -i http://osto-assignment.com/hello
 ```
 ✔ Returns `application/txt` in response headers  
+  url -i http://osto-assignment.com/hello
+  HTTP/1.1 200 OK
+  Server: openresty/1.27.1.1
+  Date: Wed, 19 Feb 2025 04:24:40 GMT
+  Content-Type: text/plain
+  Content-Length: 26
+  Connection: keep-alive
+
+  Hello, welcome to the API!
 
 ---
 
