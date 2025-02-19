@@ -1,95 +1,144 @@
+# **📊 Dashboard App**  
 
-
-# **Dashboard App**
-
-Welcome to the **Dashboard App**! This app tracks API metrics and stores them in InfluxDB.
+Welcome to the **Dashboard App**! This application tracks API metrics and stores them in **InfluxDB**, providing real-time insights into API usage.  
 
 ---
 
-## **📦 Getting Started**
+## **🚀 Getting Started**  
 
-### **1️⃣ Prerequisites**
+### **1️⃣ Prerequisites**  
 
-Ensure you have the following installed on your machine:
+Ensure you have the following installed on your system:  
 
-- **Docker**: To build and run the application with `docker-compose`
-- **Git**: To clone the repository
+- **Docker** – To build and run the application using `docker-compose`  
+- **Git** – To clone the repository  
 
-### **2️⃣ Clone the Repository**
+---
 
-Clone this repository to your local machine:
+### **2️⃣ Clone the Repository**  
+
+Clone this repository to your local machine and navigate to the project directory:  
 
 ```bash
 git clone https://github.com/drive-deep/waf.git
 cd waf/dashboard_app
 ```
 
-### **3️⃣ Set Up Environment Variables**
+---
 
-Create a `.env` file in the `dashboard_app` directory with the following content:
+### **3️⃣ Configure Environment Variables**  
+update your `/etc/hosts` file with the following entries:  
 
 ```text
-INFLUXDB_URL=http://localhost:8086
-INFLUXDB_ORG=my-org
-INFLUXDB_BUCKET=api_metrics
+127.0.0.1 osto-assignment.com
+127.0.0.1 www.osto-assignment.com
 ```
 
-### **4️⃣ Start the App Using Docker Compose**
+This ensures local domain resolution for API requests.
 
-Build and start the app with the following command:
+---
+
+### **4️⃣ Start the Application**  
+
+Run the following command to build and start the app:  
 
 ```bash
 docker-compose up --build
 ```
 
-This will:
+This command will:  
 
-- Build the app and required containers
-- Start **InfluxDB**, **Nginx**, and the **Go Web App**
+✔ Build the application and required containers  
+✔ Start **InfluxDB**, **Nginx**, and the **Go Web App**  
 
-The app will be available at `http://localhost:8090`.
+Once the setup is complete, the app will be accessible at:  
+
+👉 **`http://localhost:8090`**  
 
 ---
 
-## **🧪 Test the API**
+## **🛠 Testing the API**  
 
-Once the app is running, you can test the API and check the metrics.
+Once the app is running, you can test its functionality and verify the metrics being recorded.  
 
-### **1️⃣ Make an API Request**
+### **1️⃣ Make API Requests**  
 
-Use `curl` to make an API request to the app:
+You can test the API by making requests to different endpoints:  
 
 ```bash
-curl http://localhost:8090/
+curl -i http://osto-assignment.com/orders
+```
+✔ Returns `application/json` in response headers  
+
+```bash
+curl -i http://osto-assignment.com/hello
+```
+✔ Returns `application/txt` in response headers  
+
+---
+
+### **2️⃣ Fetch Metrics from the API**  
+
+Retrieve API usage metrics with:  duration is in second
+
+```bash
+curl -i "http://localhost:8090/?interval=5000"
 ```
 
-You should receive a JSON response like:
+📌 **Example Response:**  
 
 ```json
-[
-  {
-    "APIEndpoint": "/orders",
-    "HitsToday": 120,
-    "HitsWeek": 800
-  },
-  {
-    "APIEndpoint": "/users",
-    "HitsToday": 90,
-    "HitsWeek": 600
-  }
-]
+{
+  "data": [
+    {"api_endpoint": "/orders", "hits": 1},
+    {"api_endpoint": "/users", "hits": 1}
+  ],
+  "timeframe": "5000"
+}
 ```
 
-### **2️⃣ Verify Metrics in InfluxDB**
+To get daily and weekly aggregated metrics:  
 
-To verify the metrics, you can query the InfluxDB instance. You can use the InfluxDB UI or CLI to check the data in the `api_metrics` bucket.
+```bash
+curl -i "http://localhost:8090/"
+```
+
+📌 **Example Response:**  
+
+```json
+{
+  "day": [
+    {"api_endpoint": "/orders", "hits": 3},
+    {"api_endpoint": "/users", "hits": 4},
+    {"api_endpoint": "_users", "hits": 2},
+    {"api_endpoint": "orders/1", "hits": 1}
+  ],
+  "week": [
+    {"api_endpoint": "/orders", "hits": 3},
+    {"api_endpoint": "/users", "hits": 4},
+    {"api_endpoint": "_users", "hits": 2},
+    {"api_endpoint": "orders/1", "hits": 1}
+  ]
+}
+```
 
 ---
 
-## **📄 License**
+### **3️⃣ Verify Metrics in InfluxDB**  
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+You can check the recorded API metrics in **InfluxDB** using either:  
+
+- The **InfluxDB UI**  
+- The **InfluxDB CLI**  
+
+Query the `api_metrics` bucket to see real-time data.
 
 ---
 
-Let me know if you need more details! 🚀
+## **📜 License**  
+
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.  
+
+---
+
+💡 **Need Help?** If you run into any issues, feel free to reach out! 🚀  
