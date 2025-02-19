@@ -66,6 +66,10 @@ func QueryAllEndpointHitsDay() ([]APIHits, error) {
 	return queryAllEndpointHits("-1d")
 }
 
+func QueryAllEndpointHitsSecond(duration int64) ([]APIHits, error) {
+	return queryAllEndpointHits(fmt.Sprintf("-%ds", duration))
+}
+
 func queryAllEndpointHits(duration string) ([]APIHits, error) {
 	log.Printf("client : %v", client)
 	log.Printf("org : %v", org)
@@ -77,9 +81,9 @@ func queryAllEndpointHits(duration string) ([]APIHits, error) {
 	from(bucket: "%s")
 		|> range(start: %s)
 		|> filter(fn: (r) => r["_measurement"] == "api_requests")
-		|> group(columns: ["endpoint"])
-		|> count()`,
-		bucket, duration)
+		|> filter(fn: (r) => r["_field"] == "value")  // Only count actual values
+		|> group(columns: ["endpoint"]) // Group by endpoint
+		|> count()`, bucket, duration)
 
 	result, err := queryAPI.Query(context.Background(), query)
 	if err != nil {
@@ -87,7 +91,7 @@ func queryAllEndpointHits(duration string) ([]APIHits, error) {
 		return nil, err
 	}
 	defer result.Close()
-
+    log.Printf("result : %v", result)
 	var apiHits []APIHits
 	for result.Next() {
 		record := result.Record()
@@ -98,6 +102,8 @@ func queryAllEndpointHits(duration string) ([]APIHits, error) {
 		}
 
 		hits, ok := record.Value().(int64)
+		log.Printf("hits: %v", record.Value())
+		log.Printf("hits: %v", hits)
 		if !ok {
 			log.Printf("Invalid hits data type")
 			continue
