@@ -66,6 +66,11 @@ Once the app is running, you can test its functionality and verify the metrics b
 You can test the API by making requests to different endpoints:  
 
 ```bash
+curl -i http://osto-assignment.com/users
+```
+✔ Returns `application/json` in response headers  
+
+```bash
 curl -i http://osto-assignment.com/orders
 ```
 ✔ Returns `application/json` in response headers  
@@ -109,15 +114,11 @@ curl -i "http://localhost:8090/"
 {
   "day": [
     {"api_endpoint": "/orders", "hits": 3},
-    {"api_endpoint": "/users", "hits": 4},
-    {"api_endpoint": "_users", "hits": 2},
-    {"api_endpoint": "orders/1", "hits": 1}
+    {"api_endpoint": "/users", "hits": 4}
   ],
   "week": [
     {"api_endpoint": "/orders", "hits": 3},
-    {"api_endpoint": "/users", "hits": 4},
-    {"api_endpoint": "_users", "hits": 2},
-    {"api_endpoint": "orders/1", "hits": 1}
+    {"api_endpoint": "/users", "hits": 4}
   ]
 }
 ```
