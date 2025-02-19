@@ -58,16 +58,8 @@ type APIHits struct {
 	Hits        int    `json:"hits"`
 }
 
-func QueryAllEndpointHitsWeek() ([]APIHits, error) {
-	return queryAllEndpointHits("-7d")
-}
-
-func QueryAllEndpointHitsDay() ([]APIHits, error) {
-	return queryAllEndpointHits("-1d")
-}
-
-func QueryAllEndpointHitsSecond(duration int64) ([]APIHits, error) {
-	return queryAllEndpointHits(fmt.Sprintf("-%ds", duration))
+func QueryAllEndpointHitsDuration(duration string) ([]APIHits, error) {
+	return queryAllEndpointHits(duration)
 }
 
 func queryAllEndpointHits(duration string) ([]APIHits, error) {

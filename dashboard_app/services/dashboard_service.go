@@ -2,7 +2,6 @@ package services
 
 import (
 	"encoding/json"
-	"errors"
 	"log"
 
 	"github.com/drive-deep/waf/dashboard_app/influxdb"
@@ -14,16 +13,7 @@ func GetDashboardData(duration string) ([]models.Dashboard, error) {
 	var apiHits []influxdb.APIHits
 	var err error
 
-	// Select the appropriate function based on the duration
-	switch duration {
-	case "day":
-		apiHits, err = influxdb.QueryAllEndpointHitsDay()
-	case "week":
-		apiHits, err = influxdb.QueryAllEndpointHitsWeek()
-	default:
-		return nil, errors.New("invalid duration: must be 'day' or 'week'")
-	}
-
+	apiHits, err = influxdb.QueryAllEndpointHitsDuration(duration)
 	if err != nil {
 		log.Printf("Error fetching data from InfluxDB: %v", err)
 		return nil, err
