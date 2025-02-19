@@ -1,4 +1,4 @@
-# **📊 Dashboard App**  
+# **📊 WAF Dashboard App**  
 
 Welcome to the **Dashboard App**! This application tracks API metrics and stores them in **InfluxDB**, providing real-time insights into API usage.  
 
